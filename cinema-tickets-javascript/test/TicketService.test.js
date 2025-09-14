@@ -49,6 +49,24 @@ test("throws an exception if there are no TicketTypeRequests", () => {
   equal(caughtError.message, "One or more TicketTypeRequests must be provided");
 });
 
+test("throws an exception if 0 total tickets are requested", () => {
+  let caughtError;
+  
+  try {
+    service.purchaseTickets(
+      123456,
+      new TicketTypeRequest("ADULT", 0),
+      new TicketTypeRequest("CHILD", 0),
+      new TicketTypeRequest("INFANT", 0),
+    );
+  } catch (error) {
+    caughtError = error;
+  };
+  
+  ok(caughtError instanceof InvalidPurchaseException);
+  equal(caughtError.message, "One or more total tickets must be requested");
+});
+
 test("throws an exception if a negative number of tickets are requested", () => {
 });
 

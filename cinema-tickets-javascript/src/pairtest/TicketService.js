@@ -14,6 +14,8 @@ export default class TicketService {
   purchaseTickets(accountId, ...ticketTypeRequests) {
     this.#validateAccountId(accountId);
     this.#validateTicketTypeRequests(ticketTypeRequests);
+
+    const ticketTotals = this.#caluclateTicketTotal(ticketTypeRequests);
   }
 
   /**
@@ -38,5 +40,44 @@ export default class TicketService {
     if (!requests || requests.length === 0) {
       throw new InvalidPurchaseException("One or more TicketTypeRequests must be provided");
     }
+  };
+
+  /**
+   * Calculates total tickets, total cost, and total seats for the given
+   * TicketTypeRequests.
+   * @private
+   * @param {TicketTypeRequest[]} requests - validated ticket type requests.
+   * @returns {{ totalTickets: number, totalCost: number, totalSeats: number }}
+   */
+  #caluclateTicketTotal(requests) {
+    let adultTicketCount = 0;
+    let childTicketCount = 0;
+    let infantTicketCount = 0;
+
+    // Itterate through each TicketTypeRequest to calculate the totals.
+    for (const request of requests) {
+      const type = request.getTicketType();
+      const count = request.getNoOfTickets();
+
+      // Add the ticket count to the total count bassed on type.
+      switch (type) {
+        case "ADULT":
+          adultTicketCount += count;
+          break;
+        case "CHILD":
+          childTicketCount += count;
+          break;
+        case "INFANT":
+          infantTicketCount += count;
+          break;
+      };
+    };
+
+    const totalTicketCount = adultTicketCount + childTicketCount + infantTicketCount;
+
+    // Check if 0 total ticket have been requested and throw an exception.
+    if (totalTicketCount === 0) {
+      throw new InvalidPurchaseException("One or more total tickets must be requested");
+    };
   };
 }
