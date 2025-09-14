@@ -68,6 +68,19 @@ test("throws an exception if 0 total tickets are requested", () => {
 });
 
 test("throws an exception if a negative number of tickets are requested", () => {
+  let caughtError;
+
+  try {
+    service.purchaseTickets(
+      123456,
+      new TicketTypeRequest("ADULT", -2),
+    );
+  } catch (error) {
+    caughtError = error;
+  };
+
+  ok(caughtError instanceof InvalidPurchaseException);
+  equal(caughtError.message, "Ticket count for ADULT must be 0 or more, received -2");
 });
 
 test("throws an exception if more than 25 tickets are requested", () => {

@@ -59,6 +59,11 @@ export default class TicketService {
       const type = request.getTicketType();
       const count = request.getNoOfTickets();
 
+      // Check if less than 0 tickets have been requested and throw an exception.
+      if (count < 0) {
+        throw new InvalidPurchaseException(`Ticket count for ${type} must be 0 or more, received ${count}`)
+      };
+
       // Add the ticket count to the total count bassed on type.
       switch (type) {
         case "ADULT":
