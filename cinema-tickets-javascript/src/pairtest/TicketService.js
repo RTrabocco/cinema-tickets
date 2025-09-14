@@ -15,7 +15,7 @@ export default class TicketService {
     this.#validateAccountId(accountId);
     this.#validateTicketTypeRequests(ticketTypeRequests);
 
-    const ticketTotals = this.#caluclateTicketTotal(ticketTypeRequests);
+    const ticketTotals = this.#calculateTicketTotal(ticketTypeRequests);
   }
 
   /**
@@ -49,12 +49,12 @@ export default class TicketService {
    * @param {TicketTypeRequest[]} requests - validated ticket type requests.
    * @returns {{ totalTickets: number, totalCost: number, totalSeats: number }}
    */
-  #caluclateTicketTotal(requests) {
+  #calculateTicketTotal(requests) {
     let adultTicketCount = 0;
     let childTicketCount = 0;
     let infantTicketCount = 0;
 
-    // Itterate through each TicketTypeRequest to calculate the totals.
+    // Iterate through each TicketTypeRequest to calculate the totals.
     for (const request of requests) {
       const type = request.getTicketType();
       const count = request.getNoOfTickets();
@@ -87,7 +87,7 @@ export default class TicketService {
     
     // Check if total tickets requested exceeds maximum and throw an exception.
     if (totalTicketCount > env.TICKET_MAX_PURCHASE) {
-      throw new InvalidPurchaseException(`${totalTicketCount} tickets exceeds maximun allowance of ${env.TICKET_MAX_PURCHASE} per purchase`);
+      throw new InvalidPurchaseException(`${totalTicketCount} tickets exceeds maximum allowance of ${env.TICKET_MAX_PURCHASE} per purchase`);
     };
 
     // Check if child and infant tickets are being requested without an adult

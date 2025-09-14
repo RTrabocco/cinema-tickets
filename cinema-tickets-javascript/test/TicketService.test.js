@@ -97,7 +97,7 @@ test("throws an exception if more than 25 tickets are requested", () => {
   };
 
   ok(caughtError instanceof InvalidPurchaseException);
-  equal(caughtError.message, "26 tickets exceeds maximun allowance of 25 per purchase");
+  equal(caughtError.message, "26 tickets exceeds maximum allowance of 25 per purchase");
 });
 
 test("throws an exception if more infant tickets are requested than adult tickets", () => {
