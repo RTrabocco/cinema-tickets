@@ -7,9 +7,13 @@
   },
   "type": "module",
   "scripts": {
+    "start": "node app/app.js",
     "test": "node --test"
   },
   "dependencies": {
-    "env-schema": "^6.0.1"
+    "env-schema": "^6.0.1",
+    "express": "^5.1.0",
+    "govuk-frontend": "^5.11.2",
+    "nunjucks": "^3.2.4"
   }
 }

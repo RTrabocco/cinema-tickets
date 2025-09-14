@@ -1,0 +1,25 @@
+{% extends "govuk/template.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% block head %}
+  <link href="/stylesheets/govuk-frontend.min.css" rel="stylesheet" media="all"></link>
+{% endblock %}
+
+{% block content %}
+  <form action="/purchase-tickets" method="POST">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+          Booking successful
+        </h1>
+
+        <p class="govuk-body">Total cost: £{{ counts.totalTicketCost }}</p>
+        <p class="govuk-body">Tickets purchased: {{ counts.totalTicketCount }} </p>
+        <p class="govuk-body">Seats reserved: {{ counts.totalTicketCost }}</p>
+      </div>
+    </div>
+  </form>
+{% endblock %}

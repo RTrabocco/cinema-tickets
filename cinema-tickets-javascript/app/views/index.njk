@@ -1,0 +1,68 @@
+{% extends "govuk/template.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% block head %}
+  <link href="/stylesheets/govuk-frontend.min.css" rel="stylesheet" media="all"></link>
+{% endblock %}
+
+{% block content %}
+  <form action="/purchase-tickets" method="POST">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% if errorList %}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errorList
+          }) }}
+        {% endif %}
+
+        <h1 class="govuk-heading-xl">
+          Book cinema tickets
+        </h1>
+
+        {{ govukInput({
+          label: {
+            text: "Account ID"
+          },
+          classes: "govuk-input--width-5",
+          id: "account-id",
+          name: "accountId"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Adult tickets"
+          },
+          classes: "govuk-input--width-5",
+          id: "adult-tickets",
+          name: "adultTickets"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Child tickets"
+          },
+          classes: "govuk-input--width-5",
+          id: "child-tickets",
+          name: "childTickets"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Infant tickets"
+          },
+          classes: "govuk-input--width-5",
+          id: "infant-tickets",
+          name: "infantTickets"
+        }) }}
+
+        {{ govukButton({
+          text: "Purchase tickets"
+        }) }}
+      </div>
+    </div>
+  </form>
+{% endblock %}
