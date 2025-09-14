@@ -36,7 +36,17 @@ test("throws an exception if an account ID is invalid", () => {
   };
 });
 
-test("throws an exception if 0 tickets are requested", () => {
+test("throws an exception if there are no TicketTypeRequests", () => {
+  let caughtError;
+
+  try {
+    service.purchaseTickets(123456);
+  } catch (error) {
+    caughtError = error;
+  };
+
+  ok(caughtError instanceof InvalidPurchaseException);
+  equal(caughtError.message, "One or more TicketTypeRequests must be provided");
 });
 
 test("throws an exception if a negative number of tickets are requested", () => {

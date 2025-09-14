@@ -13,6 +13,7 @@ export default class TicketService {
 
   purchaseTickets(accountId, ...ticketTypeRequests) {
     this.#validateAccountId(accountId);
+    this.#validateTicketTypeRequests(ticketTypeRequests);
   }
 
   /**
@@ -24,6 +25,18 @@ export default class TicketService {
   #validateAccountId(id) {
     if (!Number.isInteger(id) || id <= 0) {
       throw new InvalidPurchaseException(`Account ID must be greater than 0, received ${id}`);
+    }
+  };
+
+  /**
+   * Validates that an array of TicketTypeRequests have been provided.
+   * @private
+   * @param {TicketTypeRequest[]} requests - array of ticket type requests to be validated.
+   * @throws {InvalidPurchaseException} if the array is not provided, or empty.
+   */
+  #validateTicketTypeRequests(requests) {
+    if (!requests || requests.length === 0) {
+      throw new InvalidPurchaseException("One or more TicketTypeRequests must be provided");
     }
   };
 }
