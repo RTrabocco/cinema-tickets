@@ -89,6 +89,12 @@ export default class TicketService {
     if (totalTicketCount > env.TICKET_MAX_PURCHASE) {
       throw new InvalidPurchaseException(`${totalTicketCount} tickets exceeds maximun allowance of ${env.TICKET_MAX_PURCHASE} per purchase`);
     };
+
+    // Check if child and infant tickets are being requested without an adult
+    // ticket and throw an exception. 
+    if (adultTicketCount === 0 && (childTicketCount > 0 || infantTicketCount > 0)) {
+      throw new InvalidPurchaseException("Child and infant tickets must be purchased with at least one adult ticket");
+    };
     
     // Check if more infant tickets are requested than adult tickets and throw
     // an exception.

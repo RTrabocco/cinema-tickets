@@ -118,9 +118,37 @@ test("throws an exception if more infant tickets are requested than adult ticket
 });
 
 test("throws an exception if infant tickets are requested without an accompanying adult", () => {
+  let caughtError;
+
+  try {
+    service.purchaseTickets(
+      123456,
+      new TicketTypeRequest("ADULT", 0),
+      new TicketTypeRequest("INFANT", 1),
+    );
+  } catch (error) {
+    caughtError = error;
+  };
+
+  ok(caughtError instanceof InvalidPurchaseException);
+  equal(caughtError.message, "Child and infant tickets must be purchased with at least one adult ticket");
 });
 
 test("throws an exception if child tickets are requested without an accompanying adult", () => {
+  let caughtError;
+
+  try {
+    service.purchaseTickets(
+      123456,
+      new TicketTypeRequest("ADULT", 0),
+      new TicketTypeRequest("CHILD", 1),
+    );
+  } catch (error) {
+    caughtError = error;
+  };
+
+  ok(caughtError instanceof InvalidPurchaseException);
+  equal(caughtError.message, "Child and infant tickets must be purchased with at least one adult ticket");
 });
 
 test("makes a successful purchase of exactly 25 tickets", () => {
