@@ -59,24 +59,6 @@ export default class TicketService {
   };
 
   /**
-   * Calculates the total cost of tickets for a single ticket type.
-   * @private
-   * @param {string} type - ticket type to base cost calculation on. 
-   * @param {number} count - number of tickets for type.
-   * @returns {number} total cost of tickets for the provided type.
-   */
-  #calculateTypeCost(type, count) {
-    // Ticket types with their price.
-    const prices = {
-      ADULT: env.TICKET_PRICE_ADULT,
-      CHILD: env.TICKET_PRICE_CHILD,
-      INFANT: env.TICKET_PRICE_INFANT,
-    };
-
-    return count * prices[type];
-  }
-
-  /**
    * Calculates total tickets, total cost, and total seats for the given
    * TicketTypeRequests.
    * @private
@@ -84,6 +66,13 @@ export default class TicketService {
    * @returns {{ totalTicketCount: number, totalTicketCost: number, totalSeats: number }}
    */
   #calculateTicketTotal(requests) {
+    // Create a set of rules for tickets
+    const rules = {
+      ADULT: { price: env.TICKET_PRICE_ADULT, seats: 1 },
+      CHILD: { price: env.TICKET_PRICE_CHILD, seats: 1 },
+      INFANT: { price: env.TICKET_PRICE_INFANT, seats: 0 },
+    };
+
     let ticketCounts = { ADULT: 0, CHILD: 0, INFANT: 0 };
     let totalTicketCost = 0;
     let totalSeats = 0;
@@ -98,18 +87,11 @@ export default class TicketService {
         throw new InvalidPurchaseException(`Ticket count for ${type} must be 0 or more, received ${count}`)
       };
 
-      // Add the ticket count, cost, and seats to the totals bassed on type.
-      totalTicketCost += this.#calculateTypeCost(type, count);
+      // Add the ticket count, cost, and seats to the totals bassed on type and
+      // rules.
+      totalTicketCost += count * rules[type]?.price;
       ticketCounts[type] += count;
-      
-      switch (type) {
-        case "ADULT":
-          totalSeats += count;
-          break;
-        case "CHILD":
-          totalSeats += count;
-          break;
-      };
+      totalSeats += count * rules[type]?.seats;
     };
 
     const totalTicketCount = ticketCounts.ADULT + ticketCounts.CHILD + ticketCounts.INFANT;
