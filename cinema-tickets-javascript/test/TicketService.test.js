@@ -152,16 +152,81 @@ test("throws an exception if child tickets are requested without an accompanying
 });
 
 test("makes a successful purchase of exactly 25 tickets", () => {
+  const response = service.purchaseTickets(
+    123456,
+    new TicketTypeRequest("ADULT", 20),
+    new TicketTypeRequest("CHILD", 5),
+    new TicketTypeRequest("INFANT", 0),
+  );
+
+  ok("totalTicketCost" in response);
+  ok("totalTicketCount" in response);
+  ok("totalSeats" in response);
+  equal(response.totalTicketCost, 575);
+  equal(response.totalTicketCount, 25);
+  equal(response.totalSeats, 25);
 });
 
 test("makes a successful purchase of adult only tickets", () => {
+  const response = service.purchaseTickets(
+    123456,
+    new TicketTypeRequest("ADULT", 10),
+    new TicketTypeRequest("CHILD", 0),
+    new TicketTypeRequest("INFANT", 0),
+  );
+
+  ok("totalTicketCost" in response);
+  ok("totalTicketCount" in response);
+  ok("totalSeats" in response);
+  equal(response.totalTicketCost, 250);
+  equal(response.totalTicketCount, 10);
+  equal(response.totalSeats, 10);
 });
 
 test("makes a successful purchase of adult and infant tickets", () => {
+  const response = service.purchaseTickets(
+    123456,
+    new TicketTypeRequest("ADULT", 7),
+    new TicketTypeRequest("CHILD", 0),
+    new TicketTypeRequest("INFANT", 5),
+  );
+
+  ok("totalTicketCost" in response);
+  ok("totalTicketCount" in response);
+  ok("totalSeats" in response);
+  equal(response.totalTicketCost, 175);
+  equal(response.totalTicketCount, 12);
+  equal(response.totalSeats, 7);
 });
 
 test("makes a successful purchase of adult and child tickets", () => {
+  const response = service.purchaseTickets(
+    123456,
+    new TicketTypeRequest("ADULT", 3),
+    new TicketTypeRequest("CHILD", 2),
+    new TicketTypeRequest("INFANT", 0),
+  );
+
+  ok("totalTicketCost" in response);
+  ok("totalTicketCount" in response);
+  ok("totalSeats" in response);
+  equal(response.totalTicketCost, 105);
+  equal(response.totalTicketCount, 5);
+  equal(response.totalSeats, 5);
 });
 
 test("makes a successful purchase of adult, infant, and child tickets", () => {
+  const response = service.purchaseTickets(
+    123456,
+    new TicketTypeRequest("ADULT", 5),
+    new TicketTypeRequest("CHILD", 5),
+    new TicketTypeRequest("INFANT", 5),
+  );
+
+  ok("totalTicketCost" in response);
+  ok("totalTicketCount" in response);
+  ok("totalSeats" in response);
+  equal(response.totalTicketCost, 200);
+  equal(response.totalTicketCount, 15);
+  equal(response.totalSeats, 10);
 });

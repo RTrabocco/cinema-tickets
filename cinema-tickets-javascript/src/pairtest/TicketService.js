@@ -11,11 +11,27 @@ export default class TicketService {
    * Should only have private methods other than the one below.
    */
 
+  /**
+   * Handles the purchase of tickets and reservation of seats.
+   * @param {number} accountId - account ID of purchaser.
+   * @param {...TicketTypeRequest} ticketTypeRequests - ticket requests.
+   * @returns {{
+   *   totalTicketCount: number,
+   *   totalTicketCost: number,
+   *   totalSeats: number,
+   * }} summary of the purchase.
+   * @throws {InvalidPurchaseException} if validation fails.
+   */
   purchaseTickets(accountId, ...ticketTypeRequests) {
     this.#validateAccountId(accountId);
     this.#validateTicketTypeRequests(ticketTypeRequests);
 
     const ticketTotals = this.#calculateTicketTotal(ticketTypeRequests);
+
+    new TicketPaymentService().makePayment(accountId, ticketTotals.totalTicketCost);
+    new SeatReservationService().reserveSeat(accountId, ticketTotals.totalSeats);
+
+    return ticketTotals;
   }
 
   /**
@@ -43,16 +59,34 @@ export default class TicketService {
   };
 
   /**
+   * Calculates the total cost of tickets for a single ticket type.
+   * @private
+   * @param {string} type - ticket type to base cost calculation on. 
+   * @param {number} count - number of tickets for type.
+   * @returns {number} total cost of tickets for the provided type.
+   */
+  #calculateTypeCost(type, count) {
+    // Ticket types with their price.
+    const prices = {
+      ADULT: env.TICKET_PRICE_ADULT,
+      CHILD: env.TICKET_PRICE_CHILD,
+      INFANT: env.TICKET_PRICE_INFANT,
+    };
+
+    return count * prices[type];
+  }
+
+  /**
    * Calculates total tickets, total cost, and total seats for the given
    * TicketTypeRequests.
    * @private
    * @param {TicketTypeRequest[]} requests - validated ticket type requests.
-   * @returns {{ totalTickets: number, totalCost: number, totalSeats: number }}
+   * @returns {{ totalTicketCount: number, totalTicketCost: number, totalSeats: number }}
    */
   #calculateTicketTotal(requests) {
-    let adultTicketCount = 0;
-    let childTicketCount = 0;
-    let infantTicketCount = 0;
+    let ticketCounts = { ADULT: 0, CHILD: 0, INFANT: 0 };
+    let totalTicketCost = 0;
+    let totalSeats = 0;
 
     // Iterate through each TicketTypeRequest to calculate the totals.
     for (const request of requests) {
@@ -64,21 +98,21 @@ export default class TicketService {
         throw new InvalidPurchaseException(`Ticket count for ${type} must be 0 or more, received ${count}`)
       };
 
-      // Add the ticket count to the total count bassed on type.
+      // Add the ticket count, cost, and seats to the totals bassed on type.
+      totalTicketCost += this.#calculateTypeCost(type, count);
+      ticketCounts[type] += count;
+      
       switch (type) {
         case "ADULT":
-          adultTicketCount += count;
+          totalSeats += count;
           break;
         case "CHILD":
-          childTicketCount += count;
-          break;
-        case "INFANT":
-          infantTicketCount += count;
+          totalSeats += count;
           break;
       };
     };
 
-    const totalTicketCount = adultTicketCount + childTicketCount + infantTicketCount;
+    const totalTicketCount = ticketCounts.ADULT + ticketCounts.CHILD + ticketCounts.INFANT;
 
     // Check if 0 total ticket have been requested and throw an exception.
     if (totalTicketCount === 0) {
@@ -92,14 +126,20 @@ export default class TicketService {
 
     // Check if child and infant tickets are being requested without an adult
     // ticket and throw an exception. 
-    if (adultTicketCount === 0 && (childTicketCount > 0 || infantTicketCount > 0)) {
+    if (ticketCounts.ADULT === 0 && (ticketCounts.CHILD > 0 || ticketCounts.INFANT > 0)) {
       throw new InvalidPurchaseException("Child and infant tickets must be purchased with at least one adult ticket");
     };
     
     // Check if more infant tickets are requested than adult tickets and throw
     // an exception.
-    if (infantTicketCount > adultTicketCount) {
+    if (ticketCounts.INFANT > ticketCounts.ADULT) {
       throw new InvalidPurchaseException(`Each infant must be accompanied by an adult`);
     };
+
+    return {
+      totalTicketCount,
+      totalTicketCost,
+      totalSeats,
+    }
   };
 }
