@@ -84,6 +84,20 @@ test("throws an exception if a negative number of tickets are requested", () => 
 });
 
 test("throws an exception if more than 25 tickets are requested", () => {
+  let caughtError;
+
+  try {
+    service.purchaseTickets(
+      123456,
+      new TicketTypeRequest("ADULT", 20),
+      new TicketTypeRequest("CHILD", 6),
+    );
+  } catch (error) {
+    caughtError = error;
+  };
+
+  ok(caughtError instanceof InvalidPurchaseException);
+  equal(caughtError.message, "26 tickets exceeds maximun allowance of 25 per purchase");
 });
 
 test("throws an exception if more infant tickets are requested than adult tickets", () => {

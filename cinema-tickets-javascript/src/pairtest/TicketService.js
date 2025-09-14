@@ -84,5 +84,10 @@ export default class TicketService {
     if (totalTicketCount === 0) {
       throw new InvalidPurchaseException("One or more total tickets must be requested");
     };
+    
+    // Check if total tickets requested exceeds maximum and throw an exception.
+    if (totalTicketCount > env.TICKET_MAX_PURCHASE) {
+      throw new InvalidPurchaseException(`${totalTicketCount} tickets exceeds maximun allowance of ${env.TICKET_MAX_PURCHASE} per purchase`);
+    };
   };
 }
