@@ -64,7 +64,7 @@ test("throws an exception if 0 total tickets are requested", () => {
   };
   
   ok(caughtError instanceof InvalidPurchaseException);
-  equal(caughtError.message, "One or more total tickets must be requested");
+  equal(caughtError.message, "At least one ticket must be purchased");
 });
 
 test("throws an exception if a negative number of tickets are requested", () => {
@@ -97,7 +97,7 @@ test("throws an exception if more than 25 tickets are requested", () => {
   };
 
   ok(caughtError instanceof InvalidPurchaseException);
-  equal(caughtError.message, "26 tickets exceeds maximum allowance of 25 per purchase");
+  equal(caughtError.message, "Purchase exceeds maximum ticket allowance of 25, requested 26");
 });
 
 test("throws an exception if more infant tickets are requested than adult tickets", () => {
