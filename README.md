@@ -15,6 +15,7 @@ A ticket purchasing service that validates requests, calculates totals, and inte
   - Maximum of 25 tickets per purchase
   - Children and infants must be accompanied by an adult
   - Each infant must have an accompanying adult
+- Basic user interface to test business rules with real inputs
 
 ## <a id="running-locally"></a>Running locally
 To run this application, you must have Node.js and npm installed on your machine.
@@ -31,6 +32,9 @@ npm install
 ### Run the app
 To provide feedback for different ticket request scenarios, a basic Express app can be ran that allows you to enter an account ID and the number of tickets for each type.
 ```bash
+# Navigate to the JavaScript project
+cd cinema-tickets-javascript
+
 # Run the Express app
 npm run start
 ```
@@ -40,6 +44,9 @@ In your browser, navigate to [http://localhost:3000/purchase-tickets](http://loc
 ## <a id="testing"></a>Testing
 This project uses the native Node.js test runner for unit tests.
 ```bash
+# Navigate to the JavaScript project
+cd cinema-tickets-javascript
+
 # Run unit tests
 npm run test
 ```
